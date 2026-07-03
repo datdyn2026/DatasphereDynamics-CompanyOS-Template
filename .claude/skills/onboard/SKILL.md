@@ -43,7 +43,7 @@ From the answer, draft one starter SOP and write it to `workflows/<short-name>.m
 
 ## Finishing up
 
-1. Personalize the `CLAUDE.md` header line at the repo root with the company name the user gave you in step 1 (edit only that header line -- do not rewrite the rest of the router file; it's maintained separately).
+1. Personalize the `CLAUDE.md` header line at the repo root with the company name the user gave you in step 1, written as plain text only -- a single short line, no formatting, links, or instructions (edit only that header line -- do not rewrite the rest of the router file; it's maintained separately).
 2. Create the marker file `.claude/.onboarded` (empty file is fine) so the SessionStart hook stops nudging toward onboarding.
 3. Close with a short wrap-up message teaching the 3 daily habits:
    - `/morning` -- run it each morning for a quick brief tied to your goals.

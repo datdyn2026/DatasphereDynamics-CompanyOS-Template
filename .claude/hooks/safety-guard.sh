@@ -17,16 +17,19 @@ deny() {
 printf '%s' "$INPUT" | grep -Eq '"tool_name"[[:space:]]*:[[:space:]]*"Bash"' || exit 0
 
 # 1) rm with a recursive+force flag (any letter order: -rf/-fr/-vrf/-Rf/...)
-#    targeting /, ~, or a wildcard -- wipes everything.
+#    targeting /, ~, the current/parent folder, a variable root ($VAR/*),
+#    or a bare wildcard -- wipes everything.
 if printf '%s' "$INPUT" | grep -Eq 'rm[[:space:]]+-[a-zA-Z]*([rR][a-zA-Z]*f|f[a-zA-Z]*[rR])[a-zA-Z]*[[:space:]]' \
-  && printf '%s' "$INPUT" | grep -Eq 'rm[[:space:]].*[[:space:]]"?(/\*|~/\*|~|/|\*)("|[[:space:]]|$)'; then
+  && printf '%s' "$INPUT" | grep -Eq 'rm[[:space:]].*[[:space:]]"?(/\*|~/\*|~|/|\*|\./\*|\.\.(/\*?)?|\$[A-Za-z_{][A-Za-z0-9_}]*/\*)("|[[:space:]]|$)'; then
   deny "This looks like it deletes everything on / , your home folder, or a whole folder via a wildcard. Blocked for safety -- please check with a developer before running this manually."
 fi
 
-# 2) git push --force (or -f) explicitly aimed at main/master.
+# 2) Force-push (or forced +ref refspec) aimed at main/master.
+#    Word boundaries so branch names like domain-fix don't false-positive.
 if printf '%s' "$INPUT" | grep -Eq 'git[[:space:]]+push' \
-  && printf '%s' "$INPUT" | grep -Eq -- '(--force|-f)([[:space:]"]|$)' \
-  && printf '%s' "$INPUT" | grep -Eq '(main|master)'; then
+  && { { printf '%s' "$INPUT" | grep -Eq -- '(--force|-f)([[:space:]"]|$)' \
+         && printf '%s' "$INPUT" | grep -Eq '(^|[^A-Za-z0-9_/-])(main|master)([^A-Za-z0-9_-]|$)'; } \
+       || printf '%s' "$INPUT" | grep -Eq '[[:space:]]\+(refs/heads/)?(main|master)([^A-Za-z0-9_-]|$)'; }; then
   deny "This looks like a force-push to the main/master branch, which can permanently overwrite other people's work. Blocked for safety."
 fi
 
@@ -42,9 +45,11 @@ if printf '%s' "$INPUT" | grep -Eq '(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:
   deny "This looks like it downloads a script and runs it immediately, without anyone reviewing it first. Blocked for safety -- download it, take a look, then run it separately."
 fi
 
-# 5) Reading a real .env file (allows .env.example/.sample/.template/.dist).
-if printf '%s' "$INPUT" | grep -Eq '(cat|less|more|head|tail|vim|vi|nano|pico|bat)[[:space:]]+[^|;&]*\.env([[:space:]"]|$)' \
-  && ! printf '%s' "$INPUT" | grep -Eq '\.env\.(example|sample|template|dist)'; then
+# 5) Reading a real .env file (.env, .env.local, .env.production, ...).
+#    Safe sample files (.env.example/.sample/.template/.dist) are stripped
+#    first, so they can't mask a real .env elsewhere in the same command.
+STRIPPED=$(printf '%s' "$INPUT" | sed -e 's/\.env\.example//g' -e 's/\.env\.sample//g' -e 's/\.env\.template//g' -e 's/\.env\.dist//g')
+if printf '%s' "$STRIPPED" | grep -Eq '(cat|less|more|head|tail|vim|vi|nano|pico|bat)[[:space:]]+[^|;&]*\.env(\.[A-Za-z0-9_-]+)?([[:space:]"]|$)'; then
   deny "This looks like it prints the contents of a .env file, which usually holds passwords or API keys. Blocked for safety -- ask a developer if you need to check a value."
 fi
 

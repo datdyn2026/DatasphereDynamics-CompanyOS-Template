@@ -7,4 +7,4 @@
 
 | Date | Decision | Why | Owner |
 |---|---|---|---|
-| 2026-01-14 | Switched invoicing from paper checks to online payment links | Clients were paying 2-3 weeks late; online links cut that to days | Ops lead |
+| 2026-01-14 | (Example row — replace with your first real decision) Switched invoicing from paper checks to online payment links | Clients were paying 2-3 weeks late; online links cut that to days | Ops lead |
