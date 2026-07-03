@@ -20,6 +20,7 @@ Composio is a connector service: it handles the sign-in handshake with Google or
 ## What Claude can and can't do once connected
 
 - **Can:** read and search email, read your calendar, create reply drafts, archive or label messages you've dealt with.
+- **Only when you say so:** drafts, archiving, and labels happen only when you pick that action for that message (e.g. during `/inbox-triage`) — never in the background.
 - **Will always ask first:** sending. No email leaves your account without a per-message yes from you.
 - **Your data:** Composio holds the connection to your mailbox on its side. If your company has rules about third-party tools, check before connecting. You can revoke access anytime — from the Composio dashboard, or from your Google Account / Microsoft account security page ("third-party access").
 
@@ -32,7 +33,7 @@ Composio is a connector service: it handles the sign-in handshake with Google or
 
 ## Other ways (for IT teams / advanced users)
 
-Any Gmail or Outlook MCP server works with this workspace — the skills detect whatever email tools are available; nothing is hardcoded to Composio:
+Any Gmail or Outlook MCP server works with this workspace as long as it can read email, read the calendar, and create drafts (archive/label support is a plus) — the skills detect whatever email tools are available; nothing is hardcoded to Composio:
 
 - **Bring your own MCP server.** If your IT team runs one (self-hosted, or a vendor like Zapier MCP), add it with `claude mcp add` and the skills will pick it up.
 - **Anthropic's built-in claude.ai connectors** (Settings → Connectors on claude.ai) also cover Gmail and Microsoft 365, but they are **read-only** — briefings work, but `/inbox-triage` can't create drafts or archive anything. Fine as a stopgap; note the Microsoft 365 one requires a business Microsoft account.

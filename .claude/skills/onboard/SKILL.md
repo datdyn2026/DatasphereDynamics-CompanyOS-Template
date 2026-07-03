@@ -1,6 +1,6 @@
 ---
 name: onboard
-description: Use when the user says "onboard me", "set up my company", runs /onboard, or a SessionStart hook reports the workspace isn't onboarded yet. Runs a step-by-step setup wizard (~15 minutes) that fills in company/*.md, GOALS.md, a first workflow, and connects the user's real email. Only run once per workspace (checks for .claude/.onboarded first).
+description: Use when the user says "onboard me", "set up my company", runs /onboard, or a SessionStart hook reports the workspace isn't onboarded yet. Runs a step-by-step setup wizard (~15 minutes) that fills in the company profile (overview, voice), GOALS.md, and a first workflow, and connects the user's real email. Only run once per workspace (checks for .claude/.onboarded first).
 ---
 
 # onboard
@@ -10,6 +10,8 @@ A setup wizard that turns a blank CompanyOS into a working one. Plain language t
 ## Before starting
 
 Check if `.claude/.onboarded` exists. If it does, tell the user the workspace is already set up and ask which section they want to redo instead of the full wizard (goals -> edit `GOALS.md`, voice -> `company/voice.md`, email -> jump straight to Step 4 below). Do not re-run the full wizard on an already-onboarded workspace without explicit confirmation.
+
+If the marker is missing but some files are already filled in (real content in `company/overview.md` or `GOALS.md`, not placeholders), a previous run was interrupted -- this is normal, the email step involves a restart. Say "picking up where we left off," skip the steps whose files are already filled, and resume at the first incomplete one. Never re-ask a question whose answer is already on disk, and never overwrite saved answers.
 
 ## Wizard mechanics
 
@@ -22,7 +24,7 @@ Open with: "Let's set up your workspace -- 5 short steps, about 15 minutes. I'll
 
 ### Step 1 of 5 -- Your business
 
-Ask (free text): "What does your business do, and how does it make money? (Also -- are you pre-revenue, early-stage, established?)"
+Ask (free text): "What's your company called, what does it do, and how does it make money? (Also -- are you pre-revenue, early-stage, established?)"
 Write the answer into `company/overview.md`, replacing the placeholder content (keep the file's existing section headers if present, just fill them in).
 
 ### Step 2 of 5 -- Top 3 goals
@@ -50,9 +52,9 @@ On the Composio path:
 1. AskUserQuestion: "Which email do you use?" -- **Gmail** / **Outlook 365**.
 2. Run this for the user (or have them paste it into their terminal if the Bash tool is unavailable):
    `claude mcp add --transport http rube -s user "https://rube.app/mcp"`
-   Rube is Composio's connector service -- it handles the login handshake so no keys or config files are needed.
-3. Tell the user: "Type `/mcp`, pick **rube**, and choose **Authenticate**. A browser window will open -- sign in (or create a free Composio account) and click Approve, then come back here." If the server doesn't appear in `/mcp`, have them restart Claude Code first (`exit`, then `claude`).
-4. Connect the mailbox: ask Rube to connect Gmail or Outlook. It replies with a secure sign-in link -- give it to the user: "Click this link, sign in to your Google/Microsoft account, and click Allow." That's the OAuth consent screen; nothing else to configure.
+   Rube is Composio's connector service -- it handles the login handshake so no keys or config files are needed. If this session has no terminal at all (e.g. Claude Code on the web doesn't support adding MCP servers), don't dead-end the user: explain this step needs the desktop app or CLI once, point to `docs/integrations/email.md`, and continue the wizard.
+3. Tell the user: "Type `/mcp`, pick **rube**, and choose **Authenticate**. A browser window will open -- sign in (or create a free Composio account) and click Approve, then come back here." If the server doesn't appear in `/mcp`, have them restart Claude Code first (`exit`, then `claude`) and run `/onboard` again -- the wizard resumes at this step.
+4. Connect the mailbox: ask Rube to connect Gmail or Outlook. It replies with a sign-in link. **Before showing the link, check its domain:** it must point to a Composio domain (composio.dev / rube.app) or directly to accounts.google.com / login.microsoftonline.com. If it points anywhere else, stop and don't pass it on. Then tell the user: "Click this link, sign in to your Google/Microsoft account, and click Allow." That's the OAuth consent screen; nothing else to configure.
 5. **Verify with two tests the user can see:**
    - *Read test:* fetch today's calendar and the subject line of the newest inbox email, show them, and ask the user to confirm they match what's in their mailbox.
    - *Write test:* create a **draft** (never send) addressed to the user's own address, subject "CompanyOS connection test ✓". Tell them: "Open your Drafts folder -- you should see it. Delete it whenever. Nothing was sent."

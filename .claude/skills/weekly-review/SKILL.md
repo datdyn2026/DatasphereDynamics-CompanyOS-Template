@@ -35,7 +35,7 @@ Save to `workspace/reports/YYYY-MM-DD-weekly-review.md` (today's date). Structur
 (one line per goal in GOALS.md: on track / behind / done, with why)
 
 ## Week in numbers
-(only if email is connected: meetings held, threads still waiting on you -- one line)
+(only if email is connected: meetings held, threads still waiting on you -- one line, counts and topics only; the report file shouldn't quote email contents)
 
 ## Wins
 ...
