@@ -21,11 +21,9 @@ CompanyOS/
 │   ├── overview.md            # what the business is, model, stage
 │   ├── team.md                # people, roles, who-asks-for-what
 │   ├── voice.md               # brand voice + writing samples
-│   ├── icp.md                 # ideal customer profile
-│   └── connections.md         # registry of systems/tools the client uses (CRM, email, etc.)
+│   └── icp.md                 # ideal customer profile
 ├── decisions/
 │   └── log.md                 # append-only decision log (date, decision, why)
-├── inbox/                     # append-only capture: drop anything, triage later
 ├── workflows/                 # repeatable processes (SOPs) — one .md per workflow
 ├── projects/                  # one-off initiatives, one folder per project
 ├── workspace/                 # generated outputs (drafts, briefs, reports)
@@ -56,9 +54,9 @@ Pattern: interview-then-generate-files (the established convention — AIS-OS `/
 
 Mechanics:
 - `SessionStart` hook checks for `.claude/.onboarded` marker; if absent, injects: "This workspace isn't set up yet — say 'onboard me' or run /onboard."
-- Skill runs a ~7-question interview (15 min): business, model, team, top 3 goals, voice samples (paste 2-3 things you wrote), tools used, biggest time sink.
-- Generates: all `company/*.md`, `GOALS.md`, personalizes `CLAUDE.md` header, seeds `workflows/` with 1 SOP from the "biggest time sink" answer, writes `.claude/.onboarded`.
-- Ends by teaching the 3 daily commands: `/morning`, drop-to-`inbox/`, `/weekly-review`.
+- Skill runs a 5-step wizard (15 min, AskUserQuestion chips for choice steps): business + model, top 3 goals, voice samples (paste 2-3 things you wrote), connect real email (Gmail/Outlook 365 via Composio MCP — see `docs/integrations/email.md`), biggest time sink. (v1.1: dropped the team and tools questions; team.md stays as an optional placeholder.)
+- Generates: `company/overview.md` + `voice.md`, `GOALS.md`, personalizes `CLAUDE.md` header, seeds `workflows/` with 1 SOP from the "biggest time sink" answer, writes `.claude/.onboarded`.
+- Ends by teaching the 3 daily commands: `/morning`, `/inbox-triage` (real email), `/weekly-review`. (v1.1: the local `inbox/` folder and `company/connections.md` registry were removed — skills read the connected mailbox and detect available MCP tools at runtime.)
 
 ## Messaging / IM strategy
 

@@ -10,9 +10,10 @@ if [ ! -f "$MARKER" ]; then
   cat <<'EOF'
 This workspace hasn't been set up yet.
 
-Say "onboard me" or run /onboard to answer a few quick questions
-(about 15 minutes). That sets up your company info, goals, and
-first workflow so every other command actually knows your business.
+Say "onboard me" or run /onboard to start the setup wizard
+(5 steps, about 15 minutes). It sets up your company info, goals,
+and first workflow, and connects your email so every other
+command actually knows your business.
 EOF
 else
   echo "Reminder: GOALS.md drives today's priorities -- check it before diving in."

@@ -1,26 +1,32 @@
 ---
 name: inbox-triage
-description: Use when the user says "triage my inbox", "go through my inbox", "clear the inbox", or runs /inbox-triage. Walks through inbox/ items one at a time and sorts each into an action.
+description: Use when the user says "triage my inbox", "go through my email", "clear my inbox", or runs /inbox-triage. Walks through the user's real email inbox (connected during /onboard) and sorts each item into an action.
 ---
 
 # inbox-triage
 
-Anything can land in `inbox/` -- a link, a half-formed idea, a note typed on a phone. This skill sorts it, one item at a time, so nothing sits there unprocessed forever.
+Works through the user's real email inbox -- the one connected during `/onboard` -- so nothing sits there unanswered forever. One item at a time, user confirms every action.
+
+## Before starting
+
+Check that email MCP tools are available (whatever server the user linked during `/onboard`). If none are, say "Email isn't connected yet -- run /onboard to link Gmail or Outlook" and stop.
 
 ## Process
 
-For each item in `inbox/` (oldest first is a reasonable default, but ask if the user wants a different order):
+Fetch recent unread (or flagged/important) emails -- default to the last 2-3 days or ~15 items, whichever is smaller; ask if the user wants a different scope. Then for each item, oldest first:
 
-1. Show the item's content (or a short summary if it's long).
+1. Show a one-line summary: who it's from, what they want.
 2. Propose one of four routes, and ask the user to confirm or pick a different one:
-   - **Do now** -- it's small enough to just handle in this session. Do it, then move the source file to `archive/`.
-   - **Make it a project** -- it's a real initiative. Create `projects/<short-name>/brief.md` with a one-paragraph summary of what it is and why, move the original file into that project folder (or reference it), and remove it from `inbox/`.
-   - **Add to a workflow** -- it's a recurring task that belongs in an existing SOP, or is the seed of a new one. Either append a note to the relevant `workflows/<name>.md`, or suggest running `/sop-creator` for a new one. Move the source file to `archive/`.
-   - **Archive** -- not actionable, but worth keeping. Move it to `archive/` as-is.
-3. Confirm the move before doing it if there's any ambiguity about which route is right -- don't guess silently on judgment calls.
+   - **Needs a reply** -- draft the reply in the user's voice (`company/voice.md`) and save it as a **draft in their mailbox** so it's waiting in their email app. Never send it yourself unless the user explicitly says "send it" for that specific message -- sending always needs a per-message yes.
+   - **Make it a project** -- it's a real initiative. Create `projects/<short-name>/brief.md` with a one-paragraph summary of what it is and why, referencing the email.
+   - **Add to a workflow** -- it's a recurring task that belongs in an existing SOP, or the seed of a new one. Append a note to the relevant `workflows/<name>.md`, or suggest `/sop-creator` for a new one.
+   - **Done with it** -- archive or label the email as handled (if the connected server supports it), or just skip past it.
+3. Confirm before acting if there's any ambiguity about which route is right -- don't guess silently on judgment calls.
+
+If the connected server turns out to be read-only (no draft/archive tools), degrade gracefully: put the drafted reply text in chat for the user to copy into their email app, and skip the archive step.
 
 ## After finishing
 
-Give a one-line summary: how many items processed, how many became projects, how many archived. Don't re-list every item again.
+Give a one-line summary: how many emails processed, how many reply drafts created, how many became projects. Don't re-list every item again.
 
-If `inbox/` is empty, say so and stop -- there's nothing to triage.
+If there's nothing unread or flagged, say so and stop -- there's nothing to triage.

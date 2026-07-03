@@ -25,9 +25,10 @@ That's it — you're set up.
 
 Once you're onboarded, three simple habits keep this workspace useful:
 
-- **`/morning`** — run this to get a quick daily briefing.
-- **Drop things in `inbox/`** — any note, idea, or loose thread. Don't sort it
-  yourself; just capture it. Sort it later with `/inbox-triage`.
+- **`/morning`** — run this to get a quick daily briefing: goals, today's
+  calendar, and emails that need attention.
+- **`/inbox-triage`** — run this when email piles up. It walks your real
+  inbox and sorts each message into a reply draft, a project, or done.
 - **`/weekly-review`** — run this once a week for a short report on progress.
 
 ## Important: keep this repo out of Dropbox, OneDrive, and Google Drive

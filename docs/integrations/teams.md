@@ -8,6 +8,8 @@ Claude can connect to Microsoft 365 as a data source through an MCP connector. T
 
 Ask your Claude Code administrator or IT contact to enable the Microsoft 365 connector for your account. Once connected, you can ask things like "check my calendar for conflicts this week" or "find the SharePoint doc about the Q3 budget" directly in a session.
 
+Note: for Outlook email and calendar specifically, this workspace's recommended setup is the email integration in `docs/integrations/email.md` (it can also draft and archive, not just read). The Microsoft 365 connector adds Teams messages and SharePoint on top.
+
 ## Option B: A true in-Teams bot (developer add-on)
 
 If you want people to message an assistant directly inside Teams the way Slack users message `@Claude`, that requires a custom build — it is not part of this template. At a high level, it looks like:

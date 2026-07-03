@@ -14,7 +14,7 @@ Reach them: Slack or email, usually fast to respond
 
 Name: Sam Okafor
 Role: Billing & reporting
-Owns: Client invoicing, monthly reports, connections.md
+Owns: Client invoicing, monthly reports
 Reach them: Email for anything billing-related
 
 Name: Dana Whitfield

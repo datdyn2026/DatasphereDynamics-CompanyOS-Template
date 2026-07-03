@@ -9,8 +9,8 @@ in the skills themselves. New here? Run `/onboard` first.
 | Skill | What it does |
 |---|---|
 | `/onboard` | Setup interview — run this first |
-| `/morning` | Daily briefing |
-| `/inbox-triage` | Sort inbox/ captures |
+| `/morning` | Daily briefing from goals, calendar, and email |
+| `/inbox-triage` | Triage your real email inbox |
 | `/write-in-voice` | Draft anything in company voice |
 | `/sop-creator` | Turn a process into a workflow doc |
 | `/decision-log` | Record a decision |
@@ -30,9 +30,8 @@ in the skills themselves. New here? Run `/onboard` first.
 | Folder | Contents |
 |---|---|
 | `GOALS.md` | Current quarter's goals |
-| `company/` | Your business context: overview, team, voice, ICP, connections |
+| `company/` | Your business context: overview, team, voice, ICP |
 | `decisions/log.md` | Append-only decision log |
-| `inbox/` | Drop anything here; triage later |
 | `workflows/` | Your repeatable processes (SOPs) |
 | `projects/` | One-off initiatives, one folder each |
 | `workspace/` | Generated drafts, reports, logs |

@@ -14,9 +14,9 @@ No installs, no terminal. Use this unless you already work in GitHub Desktop.
    ```
    /onboard
    ```
-   Answer the interview questions (business, team, goals, voice samples, tools, biggest time sink). This generates your `company/*.md` files, `GOALS.md`, and a starter workflow.
+   Follow the setup wizard (business, goals, voice samples, email connection, biggest time sink). It generates your `company/*.md` files and `GOALS.md`, connects your Gmail or Outlook 365 inbox, and drafts a starter workflow.
 
-That's it — your workspace is live. Day to day, come back to claude.ai/code, open a session on your repo, and use `/morning`, drop notes into `inbox/`, and run `/weekly-review`.
+That's it — your workspace is live. Day to day, come back to claude.ai/code, open a session on your repo, and use `/morning`, `/inbox-triage`, and `/weekly-review`.
 
 ## Path B: Desktop app + GitHub Desktop (secondary)
 
@@ -40,9 +40,11 @@ Use this only if you want a local copy of the files (e.g., to attach local docum
 ## What happens after onboarding
 
 Every day, use three things:
-- `/morning` — a daily briefing based on your goals and recent activity.
-- `inbox/` — drop anything (a thought, a task, a pasted email) to triage later.
+- `/morning` — a daily briefing based on your goals, today's calendar, and emails needing attention.
+- `/inbox-triage` — walks your real email inbox and sorts each message into a reply draft, a project, or done.
 - `/weekly-review` — a weekly recap and planning pass.
+
+Didn't connect your email during onboarding? See `docs/integrations/email.md` — it takes about 5 minutes.
 
 For messaging integrations (Slack, Teams, Telegram), see `docs/integrations/`. For optional add-ons (browser automation, document creation, session memory), see `docs/tools/` and `docs/plugin-templates/`.
 

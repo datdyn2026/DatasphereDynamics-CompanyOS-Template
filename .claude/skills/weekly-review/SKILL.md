@@ -13,6 +13,7 @@ A short, honest weekly check-in -- not a status report written to look busy.
 2. `decisions/log.md` -- entries from the last 7 days only.
 3. `workspace/` outputs from the last 7 days (drafts, reports, logs) -- to see what was actually produced.
 4. `projects/` -- status of open projects.
+5. **The week in email/calendar** (only if email MCP tools are available -- the server the user linked during `/onboard`): meeting load for the week and any notable threads still waiting on the user. Read-only; skip silently if email isn't connected.
 
 ## Ask before writing
 
@@ -32,6 +33,9 @@ Save to `workspace/reports/YYYY-MM-DD-weekly-review.md` (today's date). Structur
 
 ## Progress vs goals
 (one line per goal in GOALS.md: on track / behind / done, with why)
+
+## Week in numbers
+(only if email is connected: meetings held, threads still waiting on you -- one line)
 
 ## Wins
 ...

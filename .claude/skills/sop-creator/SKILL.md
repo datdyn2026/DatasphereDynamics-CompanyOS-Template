@@ -15,7 +15,7 @@ Ask, one at a time if the user hasn't already covered it in their request:
 2. "Walk me through the steps, in order, as if you were training someone new."
 3. "Where does it end -- what does 'done' look like?"
 4. "Anything that commonly goes wrong, or a step people forget?"
-5. "Which tools does each step use?" (cross-reference `company/connections.md` if it's already filled in, so the SOP names tools consistently with the rest of the workspace.)
+5. "Which tools does each step use?" (name tools consistently with how they appear in other `workflows/*.md` files, so the same tool isn't called two different things across SOPs.)
 
 Don't force all 5 questions if the user's first answer already covers most of it -- just fill gaps.
 

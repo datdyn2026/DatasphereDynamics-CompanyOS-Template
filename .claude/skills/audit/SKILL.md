@@ -9,8 +9,8 @@ This skill audits the *workspace setup*, not the company. Be honest about gaps -
 
 ## The Four Cs
 
-1. **Context** -- Are `company/overview.md`, `team.md`, `voice.md`, `icp.md`, and `connections.md` filled in, or still placeholder text? Check for leftover placeholder markers vs. real content. Note which files are still blank.
-2. **Capture** -- Is `inbox/` actually being used? Look at how many items are sitting there, and roughly how old the oldest unprocessed one is. An empty inbox that's never had anything in it is a different problem (nobody's using the habit) than a backlog of 40 stale items (capture works, triage doesn't).
+1. **Context** -- Are `company/overview.md`, `voice.md`, and `icp.md` filled in, or still placeholder text? Check for leftover placeholder markers vs. real content. Note which files are still blank (`team.md` is optional -- flag it only if the user has mentioned teammates in other files).
+2. **Connection** -- Is real email linked? Check whether email/calendar MCP tools are available in this session. If not, that's the single biggest gap: `/morning` and `/inbox-triage` are running blind. Point to the email step of `/onboard` or `docs/integrations/email.md`.
 3. **Cadence** -- Are the daily/weekly habits happening? Check file dates: how recent is the newest file in `workspace/reports/` (weekly reviews) and the newest entry in `decisions/log.md`. Gaps of more than ~2 weeks are worth calling out plainly.
 4. **Codification** -- Is `workflows/` growing? Count the SOPs there. Zero or one workflow months after onboarding suggests recurring work isn't getting documented.
 

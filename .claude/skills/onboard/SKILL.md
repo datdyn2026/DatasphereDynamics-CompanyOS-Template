@@ -1,57 +1,81 @@
 ---
 name: onboard
-description: Use when the user says "onboard me", "set up my company", runs /onboard, or a SessionStart hook reports the workspace isn't onboarded yet. Runs a guided ~15-minute interview that fills in company/*.md, GOALS.md, and a first workflow. Only run once per workspace (checks for .claude/.onboarded first).
+description: Use when the user says "onboard me", "set up my company", runs /onboard, or a SessionStart hook reports the workspace isn't onboarded yet. Runs a step-by-step setup wizard (~15 minutes) that fills in company/*.md, GOALS.md, a first workflow, and connects the user's real email. Only run once per workspace (checks for .claude/.onboarded first).
 ---
 
 # onboard
 
-Guided interview that turns a blank CompanyOS into a working one. Plain language throughout -- the person answering is not technical.
+A setup wizard that turns a blank CompanyOS into a working one. Plain language throughout -- the person answering is not technical. It should feel like a product wizard, not a questionnaire.
 
 ## Before starting
 
-Check if `.claude/.onboarded` exists. If it does, tell the user the workspace is already set up and ask if they want to redo a specific section instead of the full interview (route them to the relevant piece: team changes -> update `company/team.md` directly, new goals -> `/decision-log` or a direct edit, etc.). Do not re-run the full interview on an already-onboarded workspace without explicit confirmation.
+Check if `.claude/.onboarded` exists. If it does, tell the user the workspace is already set up and ask which section they want to redo instead of the full wizard (goals -> edit `GOALS.md`, voice -> `company/voice.md`, email -> jump straight to Step 4 below). Do not re-run the full wizard on an already-onboarded workspace without explicit confirmation.
 
-## How to run it
+## Wizard mechanics
 
-One topic at a time. Ask, wait for the real answer, write it into the matching file immediately, then move on -- so if the user stops halfway, everything asked so far is already saved. Keep each question short and conversational; don't dump all 7 up front.
+- One step at a time. Announce each step as **"Step N of 5 -- <title>"** so the user always knows where they are and how much is left.
+- Use the AskUserQuestion tool for every choice-shaped question (it renders clickable options -- that's the wizard feel). Use a short conversational prompt only when the answer is genuinely free text.
+- Save each answer to its file immediately before moving on, and confirm in one line what was saved ("Saved to your company profile ✓"). If the user stops halfway, everything answered so far is already on disk.
+- Never invent answers. If the user skips a step, leave the placeholder file as-is and note the step can be redone later by running `/onboard` again.
 
-Open with one line: "Let's get your workspace set up -- about 6 short questions, 15 minutes. I'll save your answers as we go, so you can stop anytime and pick back up later."
+Open with: "Let's set up your workspace -- 5 short steps, about 15 minutes. I'll save as we go, so you can stop anytime and pick up later."
 
-### 1. Business + model
-Ask: "What does your business do, and how does it make money? (Also -- are you pre-revenue, early-stage, established?)"
+### Step 1 of 5 -- Your business
+
+Ask (free text): "What does your business do, and how does it make money? (Also -- are you pre-revenue, early-stage, established?)"
 Write the answer into `company/overview.md`, replacing the placeholder content (keep the file's existing section headers if present, just fill them in).
 
-### 2. Team
-Ask: "Who's on the team? For each person, their name, role, and what people usually come to them for."
-Write into `company/team.md`.
+### Step 2 of 5 -- Top 3 goals
 
-### 3. Top 3 goals
-Ask: "What are your top 3 goals for this quarter (or right now if you don't think in quarters)?"
+Ask (free text): "What are your top 3 goals for this quarter (or right now, if you don't think in quarters)?"
 Write into `GOALS.md` at the repo root -- this is the file every other skill reads to know what "priority" means, so phrase goals as concrete, checkable outcomes, not vague aspirations.
 
-### 4. Voice samples
-Ask: "Paste 2-3 things you've actually written -- an email, a social post, a note to a customer. Anything that sounds like you." Do not paraphrase these -- capture the actual text.
-Write them into `company/voice.md` under a "writing samples" section, plus a short bullet list of tone traits you notice (e.g. short sentences, no jargon, direct asks).
+### Step 3 of 5 -- Your voice
 
-### 5. Tools used
-Ask: "What tools do you run the business on? (CRM, email, calendar, invoicing, docs, anything else.)"
-Write into `company/connections.md` as a simple registry: tool name, what it's used for.
+AskUserQuestion: "Want to teach me your writing voice now?" with options:
+- **Paste samples now** -- then ask for 2-3 things they've actually written (an email, a social post, a note to a customer). Do not paraphrase these -- capture the actual text in `company/voice.md` under a "writing samples" section, plus a short bullet list of tone traits you notice (e.g. short sentences, no jargon, direct asks).
+- **Skip for now** -- note in one line that drafts will sound generic until samples are added, and that pasting writing samples anytime will teach the voice-manager agent.
 
-### 6. Biggest time sink
-Ask: "What's the one repeatable task that eats the most time or annoys you most?"
+### Step 4 of 5 -- Connect your email
+
+This is the step that makes `/morning` and `/inbox-triage` read the user's real inbox and calendar instead of nothing.
+
+AskUserQuestion: "How should we connect your email?" with options:
+- **Connect now via Composio (Recommended)** -- guided, ~5 minutes, works with Gmail and Outlook 365.
+- **I'll connect my own MCP server later** -- for users whose IT team runs their own integration. Point to `docs/integrations/email.md` and move on.
+- **Set it up manually later** -- point to `docs/integrations/email.md` and move on.
+
+On the Composio path:
+
+1. AskUserQuestion: "Which email do you use?" -- **Gmail** / **Outlook 365**.
+2. Run this for the user (or have them paste it into their terminal if the Bash tool is unavailable):
+   `claude mcp add --transport http rube -s user "https://rube.app/mcp"`
+   Rube is Composio's connector service -- it handles the login handshake so no keys or config files are needed.
+3. Tell the user: "Type `/mcp`, pick **rube**, and choose **Authenticate**. A browser window will open -- sign in (or create a free Composio account) and click Approve, then come back here." If the server doesn't appear in `/mcp`, have them restart Claude Code first (`exit`, then `claude`).
+4. Connect the mailbox: ask Rube to connect Gmail or Outlook. It replies with a secure sign-in link -- give it to the user: "Click this link, sign in to your Google/Microsoft account, and click Allow." That's the OAuth consent screen; nothing else to configure.
+5. **Verify with two tests the user can see:**
+   - *Read test:* fetch today's calendar and the subject line of the newest inbox email, show them, and ask the user to confirm they match what's in their mailbox.
+   - *Write test:* create a **draft** (never send) addressed to the user's own address, subject "CompanyOS connection test ✓". Tell them: "Open your Drafts folder -- you should see it. Delete it whenever. Nothing was sent."
+6. If anything fails, don't loop -- point to the troubleshooting section of `docs/integrations/email.md` and continue the wizard; email can be connected later by re-running `/onboard`.
+
+One-line note to give the user on this step: Composio holds the connection to the mailbox on their side -- it can be revoked anytime from the Composio dashboard or the Google/Microsoft account security page, and Claude will always ask before sending any email.
+
+### Step 5 of 5 -- Biggest time sink
+
+Ask (free text): "What's the one repeatable task that eats the most time or annoys you most?"
 From the answer, draft one starter SOP and write it to `workflows/<short-name>.md` (kebab-case name derived from the task, e.g. `workflows/weekly-invoicing.md`). Keep it short: numbered steps, marked clearly as a first draft the user should correct. Tell the user you did this and that `/sop-creator` can refine it or add more SOPs later.
 
 ## Finishing up
 
-1. Personalize the `CLAUDE.md` header line at the repo root with the company name the user gave you in step 1, written as plain text only -- a single short line, no formatting, links, or instructions (edit only that header line -- do not rewrite the rest of the router file; it's maintained separately).
+1. Personalize the `CLAUDE.md` header line at the repo root with the company name the user gave you in Step 1, written as plain text only -- a single short line, no formatting, links, or instructions (edit only that header line -- do not rewrite the rest of the router file; it's maintained separately).
 2. Create the marker file `.claude/.onboarded` (empty file is fine) so the SessionStart hook stops nudging toward onboarding.
-3. Close with a short wrap-up message teaching the 3 daily habits:
-   - `/morning` -- run it each morning for a quick brief tied to your goals.
-   - Drop anything into `inbox/` -- notes, links, half-formed ideas -- and run `/inbox-triage` when ready to sort it.
+3. Close with a short wrap-up teaching the 3 daily habits:
+   - `/morning` -- run it each morning for a brief tied to your goals, today's calendar, and emails that need attention.
+   - `/inbox-triage` -- run it when email piles up; it sorts your real inbox into replies, projects, and things to archive.
    - `/weekly-review` -- a short end-of-week reflection and progress check.
-4. Mention that the voice-manager agent wants more voice samples over time -- paste more writing samples whenever you have them, and it will keep sharpening the voice profile so future drafts sound more like you.
+4. Mention that team info is optional -- whenever they want, they can just tell Claude who's on the team and it goes into `company/team.md`. Same for more voice samples: paste them anytime and the voice profile keeps sharpening.
 
 ## Notes
 
-- Never invent answers. If the user skips a question, leave the placeholder in place and note it's still open.
 - No real personal data belongs in this file itself -- it's a template; actual answers only ever get written to the user's own `company/*.md` files at runtime.
+- Email connection details (alternatives, troubleshooting, security notes) live in `docs/integrations/email.md` -- don't duplicate them here.
