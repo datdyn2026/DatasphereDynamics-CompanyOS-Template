@@ -1,6 +1,6 @@
 ---
 name: onboard
-description: Use when the user says "onboard me", "set up my company", runs /onboard, or a SessionStart hook reports the workspace isn't onboarded yet. Runs a step-by-step setup wizard (~15 minutes) that fills in the company profile (overview, voice), GOALS.md, and a first workflow, and connects the user's real email. Only run once per workspace (checks for .claude/.onboarded first).
+description: Use when the user says "onboard me", "set up my company", runs /onboard, or a SessionStart hook reports the workspace isn't onboarded yet. Runs a step-by-step setup wizard (~15 minutes) that fills in the company profile (overview, voice), GOALS.md, and a first workflow, and offers to connect the user's real email. Only run once per workspace (checks for .claude/.onboarded first).
 ---
 
 # onboard
@@ -11,7 +11,7 @@ A setup wizard that turns a blank CompanyOS into a working one. Plain language t
 
 Check if `.claude/.onboarded` exists. If it does, tell the user the workspace is already set up and ask which section they want to redo instead of the full wizard (goals -> edit `GOALS.md`, voice -> `company/voice.md`, email -> jump straight to Step 4 below). Do not re-run the full wizard on an already-onboarded workspace without explicit confirmation.
 
-If the marker is missing but some files are already filled in (real content in `company/overview.md` or `GOALS.md`, not placeholders), a previous run was interrupted -- this is normal, the email step involves a restart. Say "picking up where we left off," skip the steps whose files are already filled, and resume at the first incomplete one. Never re-ask a question whose answer is already on disk, and never overwrite saved answers.
+If the marker is missing but some files are already filled in (real content in `company/overview.md` or `GOALS.md`, not placeholders), a previous run was interrupted -- this is normal, the email step involves a restart. Say "picking up where we left off," skip the steps whose files are already filled, and resume at the first incomplete one. For the email step, the state check is live, not a file: if email/calendar MCP tools are already available, Step 4 is done -- skip it; if not, offer it as a single quick question ("Connect email now, or keep skipping?") rather than assuming it was never seen. Never re-ask a question whose answer is already on disk, and never overwrite saved answers.
 
 ## Wizard mechanics
 
@@ -54,7 +54,7 @@ On the Composio path:
    `claude mcp add --transport http rube -s user "https://rube.app/mcp"`
    Rube is Composio's connector service -- it handles the login handshake so no keys or config files are needed. If this session has no terminal at all (e.g. Claude Code on the web doesn't support adding MCP servers), don't dead-end the user: explain this step needs the desktop app or CLI once, point to `docs/integrations/email.md`, and continue the wizard.
 3. Tell the user: "Type `/mcp`, pick **rube**, and choose **Authenticate**. A browser window will open -- sign in (or create a free Composio account) and click Approve, then come back here." If the server doesn't appear in `/mcp`, have them restart Claude Code first (`exit`, then `claude`) and run `/onboard` again -- the wizard resumes at this step.
-4. Connect the mailbox: ask Rube to connect Gmail or Outlook. It replies with a sign-in link. **Before showing the link, check its domain:** it must point to a Composio domain (composio.dev / rube.app) or directly to accounts.google.com / login.microsoftonline.com. If it points anywhere else, stop and don't pass it on. Then tell the user: "Click this link, sign in to your Google/Microsoft account, and click Allow." That's the OAuth consent screen; nothing else to configure.
+4. Connect the mailbox: ask Rube to connect Gmail or Outlook. It replies with a sign-in link. **Before showing the link, check it:** it must be an `https://` URL whose host is exactly (or a subdomain of) composio.dev, rube.app, accounts.google.com, or login.microsoftonline.com. Anything else -- different domain, lookalike spelling, plain http -- means stop: don't pass the link on, and warn the user. Then tell the user: "Click this link, sign in to your Google/Microsoft account, and click Allow." That's the OAuth consent screen; nothing else to configure.
 5. **Verify with two tests the user can see:**
    - *Read test:* fetch today's calendar and the subject line of the newest inbox email, show them, and ask the user to confirm they match what's in their mailbox.
    - *Write test:* create a **draft** (never send) addressed to the user's own address, subject "CompanyOS connection test ✓". Tell them: "Open your Drafts folder -- you should see it. Delete it whenever. Nothing was sent."

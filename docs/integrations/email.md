@@ -12,7 +12,7 @@ Composio is a connector service: it handles the sign-in handshake with Google or
    ```
    Then restart Claude Code (`exit`, then `claude`).
 2. **Sign in to Composio.** Type `/mcp`, pick **rube**, choose **Authenticate**. A browser window opens — sign in (or create a free Composio account) and click Approve.
-3. **Connect your mailbox.** Back in the session, say "connect my Gmail" or "connect my Outlook". Claude replies with a secure sign-in link — click it, sign in to your Google or Microsoft account, and click **Allow**. That's the standard consent screen you've seen when connecting any app.
+3. **Connect your mailbox.** Back in the session, say "connect my Gmail" or "connect my Outlook". Claude replies with a sign-in link — click it, sign in to your Google or Microsoft account, and click **Allow**. That's the standard consent screen you've seen when connecting any app. Quick safety habit: the link should go to composio.dev, rube.app, accounts.google.com, or login.microsoftonline.com — if it looks like anything else, don't click it.
 4. **Check it works — two tests you can see:**
    - Ask: *"What's on my calendar today, and what's the newest email in my inbox?"* The answer should match your mailbox.
    - Ask: *"Create a draft email to myself with the subject 'CompanyOS connection test'."* Open your **Drafts** folder — it should be sitting there. Delete it whenever; nothing was sent.

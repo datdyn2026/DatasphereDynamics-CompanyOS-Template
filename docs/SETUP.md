@@ -14,7 +14,7 @@ No installs, no terminal. Use this unless you already work in GitHub Desktop.
    ```
    /onboard
    ```
-   Follow the setup wizard (business, goals, voice samples, email connection, biggest time sink). It generates your `company/*.md` files and `GOALS.md`, connects your Gmail or Outlook 365 inbox, and drafts a starter workflow.
+   Follow the setup wizard (business, goals, voice samples, email connection, biggest time sink). It fills in your company profile and `GOALS.md`, drafts a starter workflow, and offers to connect your Gmail or Outlook 365 inbox (you can skip that and do it later — see `docs/integrations/email.md`).
 
 That's it — your workspace is live. Day to day, come back to claude.ai/code, open a session on your repo, and use `/morning`, `/inbox-triage`, and `/weekly-review`.
 
