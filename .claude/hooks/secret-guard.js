@@ -35,8 +35,7 @@ const SAFE_ENV_VARS = new RegExp(String.raw`^(SSH_AUTH_SOCK|SSH_AGENT_PID|KEYBOA
 const ALLOW = [
   /(^|\s|;|&)secret-tool\s+(store|clear)\b/,
   /(^|\s)go\s+env\b/,
-  /(^|\s)npm\s+(config\s+get|env)\b/,
-  /(^|\s)yarn\s+env\b/,
+  /(^|\s)npm\s+config\s+get\s+\S/,
   /(^|\s)python\s+-m\s+sysconfig\b/,
   /(^|\s)rake\s+about\b/,
   /(^|\s)SECRET_GUARD_BYPASS=1\s/,
@@ -80,8 +79,9 @@ const DENY = [
   },
 ];
 
+// Only the precise example-file names are exempt. A broad "path mentions docs/"
+// exemption would let `cat docs/../.env` walk around every deny rule.
 const EXAMPLE_FILE = /\.env\.(example|sample|template|dist|tpl)\b/i;
-const DOC_PATH = /(^|\/)(docs?|documentation|README|CHANGELOG|HISTORY|examples?|samples?)(\/|\.|$)/i;
 
 let buf = '';
 const t = setTimeout(() => process.exit(0), 4500);
@@ -103,8 +103,8 @@ process.stdin.on('end', () => {
       return process.exit(0); // implicit allow
     }
 
-    // Document/example exclusions — if the command targets a known example file path, allow.
-    if (EXAMPLE_FILE.test(cmd) || DOC_PATH.test(cmd)) {
+    // Example-file exclusion — .env.example and friends are meant to be read.
+    if (EXAMPLE_FILE.test(cmd)) {
       return process.exit(0);
     }
 
@@ -170,7 +170,9 @@ function logDecision(verdict, pattern, originalCmd, data) {
   }
 }
 
-// Scrub known token shapes from any string before logging.
+// Scrub token shapes from any string before logging. Known prefixes first,
+// then a catch-all for Authorization headers and any long high-entropy word —
+// over-redacting this best-effort audit log is fine; leaking into it is not.
 function scrub(s) {
   return s
     .replace(/\bntn_[A-Za-z0-9_]{10,}/g, 'ntn_[REDACTED]')
@@ -179,5 +181,7 @@ function scrub(s) {
     .replace(/\bgh[ousrp]_[A-Za-z0-9]{10,}/g, 'gh_[REDACTED]')
     .replace(/\bxox[baprso]-[A-Za-z0-9-]{10,}/g, 'xox_[REDACTED]')
     .replace(/\b(AKIA|ASIA)[0-9A-Z]{16}\b/g, 'AKIA[REDACTED]')
-    .replace(/\bAIza[0-9A-Za-z_-]{20,}/g, 'AIza[REDACTED]');
+    .replace(/\bAIza[0-9A-Za-z_-]{20,}/g, 'AIza[REDACTED]')
+    .replace(/(Authorization:\s*(?:Bearer|Basic|Token)\s+)[^\s"']+/gi, '$1[REDACTED]')
+    .replace(/\b[A-Za-z0-9_\-+/=]{30,}\b/g, '[REDACTED-LONG-TOKEN]');
 }

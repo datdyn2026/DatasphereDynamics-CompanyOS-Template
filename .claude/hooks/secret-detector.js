@@ -34,7 +34,7 @@ const PATTERNS = [
   { service: 'stripe-live',    re: /\b(sk|rk)_live_[A-Za-z0-9]{20,}/g,               conf: 'HIGH' },
   { service: 'pem-private',    re: /-----BEGIN (?:RSA |DSA |EC |OPENSSH |ENCRYPTED |PGP |)PRIVATE KEY( BLOCK)?-----/g, conf: 'HIGH' },
   // MEDIUM-confidence — OpenAI sk- pattern overlaps with non-secret slugs
-  { service: 'openai-or-sk',   re: /\bsk-(?:proj-)?[A-Za-z0-9]{32,}/g,               conf: 'MEDIUM' },
+  { service: 'openai-or-sk',   re: /\bsk-(?:proj-)?[A-Za-z0-9_-]{32,}/g,             conf: 'MEDIUM' },
   // LOW-confidence — JWT pattern very noisy
   { service: 'jwt',            re: /\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g, conf: 'LOW' },
 ];
@@ -174,5 +174,9 @@ function scrub(s) {
     .replace(/\bAIza[0-9A-Za-z_-]{20,}/g, 'AIza[REDACTED]')
     .replace(/\b(sk|rk)_live_[A-Za-z0-9]{10,}/g, 'sk_live_[REDACTED]')
     .replace(/\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g, 'eyJ.[REDACTED].[REDACTED]')
-    .replace(/\bhttps:\/\/hooks\.slack\.com\/services\/[^\s'"]+/g, 'https://hooks.slack.com/services/[REDACTED]');
+    .replace(/\bhttps:\/\/hooks\.slack\.com\/services\/[^\s'"]+/g, 'https://hooks.slack.com/services/[REDACTED]')
+    .replace(/(aws_secret_access_key\s*[:=]\s*['"]?)[A-Za-z0-9/+=]{20,}/gi, '$1[REDACTED]')
+    .replace(/(Authorization:\s*(?:Bearer|Basic|Token)\s+)[^\s"']+/gi, '$1[REDACTED]')
+    .replace(/-----BEGIN[^-]*PRIVATE KEY( BLOCK)?-----[\s\S]*?(-----END[^-]*PRIVATE KEY( BLOCK)?-----|$)/g, '[REDACTED-PRIVATE-KEY]')
+    .replace(/\b[A-Za-z0-9_\-+/=]{30,}\b/g, '[REDACTED-LONG-TOKEN]');
 }

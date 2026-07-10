@@ -36,7 +36,9 @@ function rateLimited() {
 
 function activeBlockStart() {
   try {
-    const out = execSync('npx -y ccusage@latest blocks --active --json', {
+    // Requires ccusage installed (`npm install -g ccusage`) — deliberately NOT
+    // `npx -y ccusage@latest`, which would execute unpinned remote code from a hook.
+    const out = execSync('ccusage blocks --active --json', {
       timeout: 8000, stdio: ['ignore', 'pipe', 'ignore'],
     }).toString();
     const j = JSON.parse(out);
