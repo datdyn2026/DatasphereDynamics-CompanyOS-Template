@@ -35,7 +35,6 @@ const SAFE_ENV_VARS = new RegExp(String.raw`^(SSH_AUTH_SOCK|SSH_AGENT_PID|KEYBOA
 const ALLOW = [
   /(^|\s|;|&)secret-tool\s+(store|clear)\b/,
   /(^|\s)go\s+env\b/,
-  /(^|\s)npm\s+config\s+get\s+\S/,
   /(^|\s)python\s+-m\s+sysconfig\b/,
   /(^|\s)rake\s+about\b/,
   /(^|\s)SECRET_GUARD_BYPASS=1\s/,
@@ -64,6 +63,10 @@ const DENY = [
   {
     re: new RegExp(String.raw`(^|\s|;|&|\|)declare\s+-p\s+${SECRET_NAME}\b`, 'mi'),
     msg: '`declare -p <SECRET_VAR>` prints the variable\'s value. Don\'t echo secrets — pass them directly to the command that needs them.',
+  },
+  {
+    re: new RegExp(String.raw`(^|\s|;|&|\|)npm\s+config\s+(get|list)\s+\S*${SECRET_NAME}`, 'mi'),
+    msg: '`npm config get` on a token-shaped key (e.g. `_authToken`) prints the credential. Don\'t display npm auth tokens — npm reads them from .npmrc on its own.',
   },
   {
     re: /(^|\s|;|&|\|)(cat|less|more|head|tail|bat|sed\s+-n|rg|ripgrep|fgrep|egrep|grep|awk|cut|column|jq|yq|view)\s+[^|;&]*?(\.env(\.[A-Za-z0-9_-]+)?|\.aws\/credentials|\.netrc|\.config\/gh\/(hosts|config)\.yml|\.slack-webhook|\.claude\.json|\.credentials\.json|\.encryption-key|\/secrets?\.[a-z]+|id_(rsa|ed25519|ecdsa))(\s|$|[|;&])/m,
