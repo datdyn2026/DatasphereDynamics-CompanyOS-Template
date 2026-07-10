@@ -14,7 +14,7 @@ No installs, no terminal. Use this unless you already work in GitHub Desktop.
    ```
    /onboard
    ```
-   Follow the setup wizard (business, goals, voice samples, email connection, biggest time sink). It fills in your company profile and `GOALS.md`, drafts a starter workflow, and offers to connect your Gmail or Outlook 365 inbox (you can skip that and do it later — see `docs/integrations/email.md`).
+   Follow the setup wizard (business, goals, voice samples, email connection, biggest time sink, optional extras). It fills in your company profile and `GOALS.md`, drafts a starter workflow, and offers to connect your Gmail or Outlook 365 inbox (you can skip that and do it later — see `docs/integrations/email.md`).
 
 That's it — your workspace is live. Day to day, come back to claude.ai/code, open a session on your repo, and use `/morning`, `/inbox-triage`, and `/weekly-review`.
 
@@ -46,6 +46,6 @@ Every day, use three things:
 
 Didn't connect your email during onboarding? See `docs/integrations/email.md` — it takes about 5 minutes.
 
-For messaging integrations (Slack, Teams, Telegram), see `docs/integrations/`. For optional add-ons (browser automation, document creation, session memory), see `docs/tools/` and `docs/plugin-templates/`.
+For messaging integrations (Slack, Teams, Telegram), see `docs/integrations/`. For optional add-ons (browser automation, session memory, extra skills and agents), see the catalog in `docs/addons.md`.
 
 If you get stuck, the official Claude Code docs are at [docs.claude.com](https://docs.claude.com).

@@ -14,10 +14,11 @@ and answer some questions about your business, you can set this up.
    copy. Your copy is private and belongs to you.
 2. **Open your fork in Claude Code on the web**, connected to your new repo.
    This is the easiest way to use this workspace — no software to install.
-3. **Run `/onboard`.** A 5-step setup wizard (about 15 minutes): your
+3. **Run `/onboard`.** A 6-step setup wizard (about 15 minutes): your
    business, your goals, how you write, connecting your email (Gmail or
-   Outlook 365), and your biggest time sink. Claude saves your answers into
-   the `company/` files and `GOALS.md` as you go.
+   Outlook 365), your biggest time sink, and a menu of optional extras.
+   Claude saves your answers into the `company/` files and `GOALS.md` as
+   you go.
 
 That's it — you're set up.
 

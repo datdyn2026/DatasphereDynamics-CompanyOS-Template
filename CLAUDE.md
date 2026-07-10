@@ -37,6 +37,7 @@ in the skills themselves. New here? Run `/onboard` first.
 | `workspace/` | Generated drafts, reports, logs |
 | `archive/` | Completed projects and past quarters |
 | `examples/acme/` | Filled example — see what "done" looks like |
+| `extras/` | Optional add-ons — inert until installed via `/onboard` or `docs/addons.md` |
 | `docs/` | Design notes and setup guide |
 | `.claude/` | Skills, agents, hooks, settings |
 

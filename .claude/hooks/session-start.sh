@@ -11,7 +11,7 @@ if [ ! -f "$MARKER" ]; then
 This workspace hasn't been set up yet.
 
 Say "onboard me" or run /onboard to start the setup wizard
-(5 steps, about 15 minutes). It sets up your company info, goals,
+(6 steps, about 15 minutes). It sets up your company info, goals,
 and first workflow, and connects your email so every other
 command actually knows your business.
 EOF
